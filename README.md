@@ -5,6 +5,7 @@ A zero-dependency CLI and AI agent skill for the Taiga.io project management RES
 [![CI](https://github.com/aliepratama/taiga-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/aliepratama/taiga-cli/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![skills.sh](https://skills.sh/b/aliepratama/taiga-cli)](https://skills.sh/aliepratama/taiga-cli)
 
 > **Disclaimer:** This is an independent, community-maintained project. It is **not** affiliated with, endorsed by, sponsored by, or associated with Kaleidos Open Source SL, Taiga Agile LLC, or any of their subsidiaries. "Taiga" and related marks are trademarks of their respective owners. The official Taiga platform lives at https://taiga.io.
 

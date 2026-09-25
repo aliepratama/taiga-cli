@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Documented installation through the `skills` CLI (`npx skills add aliepratama/taiga-cli`), which places the skill in the correct directory for Claude Code, opencode, Gemini CLI, GitHub Copilot and other agents that read the Agent Skills format.
+
+### Changed
+- `SKILL.md` no longer assumes the CLI is installed at `~/.local/bin/taiga`. It now explains that the `taiga` name requires the script to be on `PATH`, and that an agent-installed copy should be invoked as `python3 scripts/taiga.py` relative to the skill directory.
+
 ## [0.1.0] - 2026-09-25
 
 ### Added

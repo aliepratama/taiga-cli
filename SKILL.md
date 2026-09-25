@@ -11,7 +11,16 @@ metadata:
 
 > **Disclaimer:** This is an independent, community-maintained project. It is **not** affiliated with, endorsed by, sponsored by, or associated with Kaleidos Open Source SL, Taiga Agile LLC, or any of their subsidiaries. "Taiga" and related marks are trademarks of their respective owners. The official Taiga platform lives at https://taiga.io.
 
-This skill provides comprehensive access to the **Taiga.io** project management platform using the standalone CLI `taiga` (installed at `~/.local/bin/taiga`).
+This skill provides comprehensive access to the **Taiga.io** project management platform through a zero-dependency Python CLI.
+
+**Invocation**: examples below use `taiga` for brevity. That name is available when the
+script is on your `PATH` (for example symlinked into `~/.local/bin/taiga`). When this
+skill is installed into an agent skills directory, invoke the script by its path
+instead, using the `scripts/taiga.py` file that sits beside this document:
+
+```bash
+python3 scripts/taiga.py --version
+```
 
 ## Key Features
 

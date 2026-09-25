@@ -17,9 +17,23 @@ A zero-dependency CLI and AI agent skill for the Taiga.io project management RES
 
 ## Install
 
-### AI Agent Skill
+### AI Agent Skill (recommended)
 
-Clone the repository directly into your agent skills directory:
+Install with the [`skills`](https://www.skills.sh) CLI, which places the skill in the
+correct directory for whichever agent you use:
+
+```bash
+npx skills add aliepratama/taiga-cli
+```
+
+This works with Claude Code, opencode, Gemini CLI, GitHub Copilot, Cursor, Codex,
+Amp, Zed, and other agents that read the Agent Skills format. Use
+`npx skills update` to pull later releases.
+
+#### Manual installation
+
+If you prefer not to use the `skills` CLI, clone the repository directly into your
+agent skills directory:
 
 ```bash
 # Claude Code

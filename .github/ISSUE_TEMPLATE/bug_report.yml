@@ -1,0 +1,83 @@
+name: Bug Report
+description: File a bug report for taiga-cli
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue with `taiga-cli`. Please ensure your report does not contain any passwords, auth tokens, or private endpoints.
+
+  - type: input
+    id: version
+    attributes:
+      label: taiga-cli Version or Commit
+      description: Provide the release version (e.g., 0.1.0) or git commit hash.
+      placeholder: "e.g., 0.1.0 (commit abc1234)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: execution_context
+    attributes:
+      label: Execution Context
+      description: How are you invoking taiga-cli?
+      options:
+        - Standalone CLI
+        - Claude Code skill
+        - opencode skill
+        - other agent
+    validations:
+      required: true
+
+  - type: input
+    id: python_os
+    attributes:
+      label: Python Version and Operating System
+      description: Provide Python version and operating system details.
+      placeholder: "e.g., Python 3.11.6 on Ubuntu 22.04 LTS"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: instance_type
+    attributes:
+      label: Taiga Instance Type
+      description: Which Taiga server environment is targeted?
+      options:
+        - taiga.io hosted
+        - self-hosted
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact Command Run (Credentials Masked)
+      description: Enter the exact command used. Redact any tokens or passwords before submitting.
+      placeholder: "taiga issues list --project 123"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_vs_actual
+    attributes:
+      label: Expected vs Actual Behavior
+      description: Describe what you expected to occur and what actually occurred.
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback or Error Output
+      description: Paste any standard error, HTTP status codes, or Python tracebacks.
+      render: shell
+
+  - type: checkboxes
+    id: safety_confirmation
+    attributes:
+      label: Credential Safety Confirmation
+      options:
+        - label: I confirm that no sensitive credentials, passwords, or authentication tokens are included in this report.
+          required: true

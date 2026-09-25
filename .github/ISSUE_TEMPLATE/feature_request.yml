@@ -1,0 +1,41 @@
+name: Feature Request
+description: Propose a new feature, flag, or command for taiga-cli
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Strict Zero-Dependency Policy:**
+        `taiga-cli` requires zero external runtime dependencies. All functionality must be implemented using only Python 3 standard library modules (`urllib`, `json`, `argparse`, `pathlib`, `tempfile`). Feature requests that require installing third-party packages from PyPI cannot be accepted.
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Problem or Use Case
+      description: What task or workflow are you trying to accomplish?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_interface
+    attributes:
+      label: Proposed CLI Interface
+      description: Provide the command syntax, subcommands, or flags you propose adding.
+      placeholder: "taiga issues list --custom-filter value"
+    validations:
+      required: true
+
+  - type: textarea
+    id: agent_skill_impact
+    attributes:
+      label: Agent Skill Impact (SKILL.md)
+      description: Describe how this command or flag would be documented in `SKILL.md` for AI agent consumption.
+
+  - type: checkboxes
+    id: dependency_acknowledgment
+    attributes:
+      label: Design Constraint Acknowledgment
+      options:
+        - label: I understand that taiga-cli relies exclusively on the Python standard library and this proposal introduces no external dependencies.
+          required: true

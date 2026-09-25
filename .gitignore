@@ -1,0 +1,27 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Distribution and builds
+build/
+dist/
+*.egg-info/
+
+# Local logs and temporary artifacts
+.logs/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Security warning: never commit Taiga configuration or cached session credentials
+config.json
+session.json

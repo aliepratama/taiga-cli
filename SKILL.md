@@ -13,13 +13,37 @@ metadata:
 
 This skill provides comprehensive access to the **Taiga.io** project management platform through a zero-dependency Python CLI.
 
-**Invocation**: examples below use `taiga` for brevity. That name is available when the
-script is on your `PATH` (for example symlinked into `~/.local/bin/taiga`). When this
-skill is installed into an agent skills directory, invoke the script by its path
-instead, using the `scripts/taiga.py` file that sits beside this document:
+## Invocation: resolve this first
+
+Every example below is written as `taiga <command>`. That bare name only works when
+the script is on `PATH`. Before running any example, determine which form to use:
 
 ```bash
-python3 scripts/taiga.py --version
+command -v taiga
+```
+
+- **Exit code 0**: `taiga` is on `PATH`. Use the examples exactly as written.
+- **Non-zero**: the skill is installed in an agent skills directory. Substitute
+  `python3 <skill_dir>/scripts/taiga.py` for `taiga` in every example, where
+  `<skill_dir>` is the directory containing this `SKILL.md`.
+
+Confirm the resolved form works before proceeding:
+
+```bash
+# on PATH
+taiga --version
+
+# installed as a skill
+python3 <skill_dir>/scripts/taiga.py --version
+```
+
+Both print `taiga-cli <version>`. Do not report a missing `taiga` command as a skill
+failure; fall back to the `python3` form instead.
+
+Users who want the short `taiga` name can link the script onto their `PATH`:
+
+```bash
+ln -s "$(pwd)/scripts/taiga.py" ~/.local/bin/taiga && chmod +x scripts/taiga.py
 ```
 
 ## Key Features

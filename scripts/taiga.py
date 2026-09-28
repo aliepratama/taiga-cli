@@ -695,7 +695,9 @@ def cmd_issues(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "update":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target issue ID or #ref is required. Pass <target> or --id <id>.")
         current = client.request("GET", f"issues/{target}")
         version = current.get("version")
 
@@ -725,7 +727,9 @@ def cmd_issues(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "delete":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target issue ID is required. Pass <target> or --id <id>.")
         client.request("DELETE", f"issues/{target}")
         res = {"deleted": "issue", "id": target}
         if args.json:
@@ -806,10 +810,21 @@ def cmd_stories(client: TaigaClient, args: argparse.Namespace):
             payload["tags"] = [t.strip() for t in args.tags.split(",") if t.strip()]
 
         created = client.request("POST", "userstories", data=payload)
+        story_id = created.get("id")
+        if args.epic and story_id:
+            try:
+                client.request(
+                    "POST",
+                    f"epics/{args.epic}/related_userstories",
+                    data={"epic": args.epic, "user_story": story_id},
+                )
+            except Exception as e:
+                sys.stderr.write(f"Warning: Failed to link story {story_id} to epic {args.epic}: {e}\n")
+
         res = {
             "created": "story",
             "ref": created.get("ref"),
-            "id": created.get("id"),
+            "id": story_id,
             "subject": created.get("subject"),
             "version": created.get("version"),
         }
@@ -819,7 +834,9 @@ def cmd_stories(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "update":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target story ID or #ref is required. Pass <target> or --id <id>.")
         current = client.request("GET", f"userstories/{target}")
         version = current.get("version")
 
@@ -849,7 +866,9 @@ def cmd_stories(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "delete":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target story ID is required. Pass <target> or --id <id>.")
         client.request("DELETE", f"userstories/{target}")
         res = {"deleted": "story", "id": target}
         if args.json:
@@ -942,7 +961,9 @@ def cmd_tasks(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "update":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target task ID or #ref is required. Pass <target> or --id <id>.")
         current = client.request("GET", f"tasks/{target}")
         version = current.get("version")
 
@@ -972,7 +993,9 @@ def cmd_tasks(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "delete":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target task ID is required. Pass <target> or --id <id>.")
         client.request("DELETE", f"tasks/{target}")
         res = {"deleted": "task", "id": target}
         if args.json:
@@ -1044,7 +1067,9 @@ def cmd_epics(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "update":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target epic ID or #ref is required. Pass <target> or --id <id>.")
         current = client.request("GET", f"epics/{target}")
         payload = {"version": current.get("version")}
         if args.data:
@@ -1068,7 +1093,9 @@ def cmd_epics(client: TaigaClient, args: argparse.Namespace):
             print(encode_toon(None, res))
 
     elif action == "delete":
-        target = args.id
+        target = args.target if args.target is not None else args.id
+        if not target:
+            raise ValueError("Target epic ID is required. Pass <target> or --id <id>.")
         client.request("DELETE", f"epics/{target}")
         res = {"deleted": "epic", "id": target}
         if args.json:
@@ -1134,8 +1161,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_iss = subparsers.add_parser("issues", parents=[common_opts], help="Manage issues")
     p_iss.add_argument("action", choices=["list", "get", "create", "update", "delete"])
-    p_iss.add_argument("target", nargs="?", help="Issue ID or #ref for 'get'")
-    p_iss.add_argument("--id", type=int, help="Issue ID for update/delete")
+    p_iss.add_argument("target", nargs="?", help="Issue ID or #ref for 'get', 'update', or 'delete'")
+    p_iss.add_argument("--id", type=int, help="Issue ID for update/delete (optional alternative to target)")
     p_iss.add_argument("--subject", "-s", help="Issue subject/title")
     p_iss.add_argument("--desc", "-d", help="Issue description")
     p_iss.add_argument("--type", type=int, help="Type ID")
@@ -1154,8 +1181,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_us = subparsers.add_parser("stories", parents=[common_opts], help="Manage user stories")
     p_us.add_argument("action", choices=["list", "get", "create", "update", "delete"])
-    p_us.add_argument("target", nargs="?", help="Story ID or #ref for 'get'")
-    p_us.add_argument("--id", type=int, help="Story ID for update/delete")
+    p_us.add_argument("target", nargs="?", help="Story ID or #ref for 'get', 'update', or 'delete'")
+    p_us.add_argument("--id", type=int, help="Story ID for update/delete (optional alternative to target)")
     p_us.add_argument("--subject", "-s", help="Story subject/title")
     p_us.add_argument("--desc", "-d", help="Story description")
     p_us.add_argument("--status", type=int, help="Status ID")
@@ -1173,8 +1200,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_tsk = subparsers.add_parser("tasks", parents=[common_opts], help="Manage tasks")
     p_tsk.add_argument("action", choices=["list", "get", "create", "update", "delete"])
-    p_tsk.add_argument("target", nargs="?", help="Task ID or #ref for 'get'")
-    p_tsk.add_argument("--id", type=int, help="Task ID for update/delete")
+    p_tsk.add_argument("target", nargs="?", help="Task ID or #ref for 'get', 'update', or 'delete'")
+    p_tsk.add_argument("--id", type=int, help="Task ID for update/delete (optional alternative to target)")
     p_tsk.add_argument("--subject", "-s", help="Task subject/title")
     p_tsk.add_argument("--desc", "-d", help="Task description")
     p_tsk.add_argument("--story", type=int, help="Parent user story ID")
@@ -1191,8 +1218,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_epc = subparsers.add_parser("epics", parents=[common_opts], help="Manage epics")
     p_epc.add_argument("action", choices=["list", "get", "create", "update", "delete"])
-    p_epc.add_argument("target", nargs="?", help="Epic ID or #ref for 'get'")
-    p_epc.add_argument("--id", type=int, help="Epic ID for update/delete")
+    p_epc.add_argument("target", nargs="?", help="Epic ID or #ref for 'get', 'update', or 'delete'")
+    p_epc.add_argument("--id", type=int, help="Epic ID for update/delete (optional alternative to target)")
     p_epc.add_argument("--subject", "-s", help="Epic subject/title")
     p_epc.add_argument("--desc", "-d", help="Epic description")
     p_epc.add_argument("--color", help="Epic hex color (#E4405F)")

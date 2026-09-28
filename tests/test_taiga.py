@@ -408,6 +408,82 @@ class TestSecurityHardening(unittest.TestCase):
             # Reload module after test to restore default environment state
             importlib.reload(taiga)
 
+    def test_positional_target_resolution(self):
+        client = mock.MagicMock(spec=taiga.TaigaClient)
+
+        # Mock GET to return an object with version
+        client.request.side_effect = lambda method, endpoint, **kwargs: (
+            {"id": 123, "version": 1, "ref": 42}
+            if method in ("GET", "PATCH")
+            else {"id": 123}
+        )
+
+        # Test tasks delete with positional target
+        args_del = mock.MagicMock()
+        args_del.action = "delete"
+        args_del.target = "9302001"
+        args_del.id = None
+        args_del.json = True
+        taiga.cmd_tasks(client, args_del)
+        client.request.assert_called_with("DELETE", "tasks/9302001")
+
+        # Test tasks update with positional target
+        args_up = mock.MagicMock()
+        args_up.action = "update"
+        args_up.target = "9302001"
+        args_up.id = None
+        args_up.data = None
+        args_up.subject = "New task subject"
+        args_up.status = None
+        args_up.assigned = None
+        args_up.desc = None
+        args_up.comment = None
+        args_up.json = True
+        taiga.cmd_tasks(client, args_up)
+        client.request.assert_any_call("GET", "tasks/9302001")
+        client.request.assert_any_call(
+            "PATCH",
+            "tasks/9302001",
+            data={"version": 1, "subject": "New task subject"},
+        )
+
+        # Test stories delete with positional target
+        args_story_del = mock.MagicMock()
+        args_story_del.action = "delete"
+        args_story_del.target = "9579211"
+        args_story_del.id = None
+        args_story_del.json = True
+        taiga.cmd_stories(client, args_story_del)
+        client.request.assert_called_with("DELETE", "userstories/9579211")
+
+    def test_stories_create_links_epic(self):
+        client = mock.MagicMock(spec=taiga.TaigaClient)
+        client.resolve_project_id.return_value = 1799125
+        client.request.side_effect = lambda method, endpoint, **kwargs: (
+            {"id": 999, "ref": 101, "version": 1, "subject": "Story Title"}
+            if method == "POST" and endpoint == "userstories"
+            else {"epic": 367211, "user_story": 999}
+        )
+
+        args = mock.MagicMock()
+        args.action = "create"
+        args.project = "1799125"
+        args.subject = "Story Title"
+        args.desc = None
+        args.status = None
+        args.milestone = None
+        args.assigned = None
+        args.tags = None
+        args.epic = 367211
+        args.json = True
+
+        taiga.cmd_stories(client, args)
+        client.request.assert_any_call(
+            "POST",
+            "epics/367211/related_userstories",
+            data={"epic": 367211, "user_story": 999},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
